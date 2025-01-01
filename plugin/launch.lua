@@ -1,2 +1,2 @@
-require("lua.display")
-require("lua.interaction")
+require("display")
+require("interaction")

@@ -1,6 +1,2 @@
-local M = {}
-
-M.buf = -1
-M.win = -1
-
+local M = { buf = -1, win = -1 }
 return M

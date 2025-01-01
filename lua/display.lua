@@ -1,4 +1,5 @@
 local state = require 'state'
+local M = {}
 
 local repl_commands = {
   lua = 'lua',
@@ -58,7 +59,7 @@ local function start_repl_in_current_buffer(filetype)
 end
 
 -- Opens REPL for the current buffer. Creates the REPL session if none found
-local open_repl = function()
+M.open_repl = function()
   local filetype = vim.bo.filetype -- Returns '' when unknown
   if filetype == '' then
     filetype = nil
@@ -71,28 +72,18 @@ local open_repl = function()
   end
 end
 
-local close_repl = function()
-  if vim.bo[state.buf].nvim_buf_is_valid then
+M.close_repl = function()
+  if vim.api.nvim_buf_is_valid(state.buf) then
     vim.api.nvim_buf_delete(state.buf, { force = true })
   end
 end
 
-local restart_repl = function()
-  close_repl()
-  open_repl()
-end
-
-local toggle_repl = function()
+M.toggle_repl = function()
   if vim.api.nvim_win_is_valid(state.win) then
     vim.api.nvim_win_hide(state.win) -- Closes window and hides buffer
   else
-    open_repl()
+    M.open_repl()
   end
 end
 
-vim.api.nvim_create_user_command('ReplToggle', toggle_repl, {})
-vim.api.nvim_create_user_command('ReplOpen', open_repl, {})
-vim.api.nvim_create_user_command('ReplClose', close_repl, {})
-vim.api.nvim_create_user_command('ReplRestart', restart_repl, {})
-
-vim.keymap.set('n', '<leader>rt', '<cmd>ReplToggle<CR>')
+return M

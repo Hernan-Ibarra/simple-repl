@@ -1,18 +1,22 @@
+local display = require 'display'
 local state = require 'state'
 
+local M = {}
+
 local send_to_repl = function(code)
+  display.open_repl()
   local repl_channel = vim.bo[state.buf].channel
   vim.fn.chansend(repl_channel, code .. '\n')
 end
 
 -- Send the current line to the REPL
-local function send_current_line()
+M.send_line = function()
   local line = vim.api.nvim_get_current_line()
   send_to_repl(line)
 end
 
 -- Send the selected text to the REPL
-local function send_selection()
+M.send_selection = function()
   -- Get the selected text in visual mode
   local start_row, start_col = unpack(vim.api.nvim_buf_get_mark(0, '<'))
   local end_row, end_col = unpack(vim.api.nvim_buf_get_mark(0, '>'))
@@ -27,13 +31,14 @@ local function send_selection()
   send_to_repl(table.concat(lines, '\n'))
 end
 
+M.send_paragraph = function()
+  ---
+end
+
 -- Send the whole file to the REPL
-local function send_whole_file()
+M.send_file = function()
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   send_to_repl(table.concat(lines, '\n'))
 end
 
-vim.keymap.set('n', '<leader>rl', send_current_line)
-vim.keymap.set('v', '<leader>rs', send_selection)
-
-print 'Loaded!'
+return M

@@ -76,7 +76,7 @@ M.open_repl = function()
   if vim.bo[M.state.buf].buftype ~= 'terminal' then
     start_repl_in_current_buffer(filetype)
   end
-
+  vim.cmd 'normal! G'
   vim.keymap.set('n', 'q', M.hide_repl, { buffer = M.state.buf })
 end
 

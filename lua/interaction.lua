@@ -1,5 +1,7 @@
-local display = require 'display'
+---@type {win: number, buf: number}
 local state = require 'state'
+
+local display = require 'display'
 
 local M = {}
 

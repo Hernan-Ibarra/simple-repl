@@ -1,13 +1,10 @@
 local display = require 'display'
-for k, _ in pairs(display) do
-  print(k)
-end
 
 local M = {}
 
 local send_to_repl = function(code)
   display.open_repl()
-  local repl_channel = vim.bo[display.st.buf].channel
+  local repl_channel = vim.bo[display.state.buf].channel
   vim.fn.chansend(repl_channel, code .. '\n')
 end
 

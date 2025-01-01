@@ -1,4 +1,4 @@
-local state = require 'lua.state'
+local state = require 'state'
 
 local repl_commands = {
   lua = 'lua',

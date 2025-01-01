@@ -5,15 +5,19 @@ local M = {}
 local send_to_repl = function(code)
   display.open_repl()
   local repl_channel = vim.bo[display.state.buf].channel
-  vim.fn.chansend(repl_channel, code .. '\n')
+  vim.fn.chansend(repl_channel, code)
 end
-
-send_to_repl '2 + 3'
 
 -- Send the current line to the REPL
 M.send_line = function()
   local line = vim.api.nvim_get_current_line()
-  send_to_repl(line)
+  send_to_repl { line, '' }
+end
+
+-- Send the whole file to the REPL
+M.send_file = function()
+  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+  send_to_repl(table.insert(lines, ''))
 end
 
 -- Send the selected text to the REPL
@@ -34,12 +38,6 @@ end
 
 M.send_paragraph = function()
   ---
-end
-
--- Send the whole file to the REPL
-M.send_file = function()
-  local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-  send_to_repl(table.concat(lines, '\n'))
 end
 
 return M

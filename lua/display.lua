@@ -1,6 +1,6 @@
-local M = {}
-
-M.state = { buf = -1, win = -1 }
+local M = {
+  st = { buf = -1, win = -1 },
+}
 
 local repl_commands = {
   lua = 'lua',
@@ -12,9 +12,9 @@ local repl_commands = {
 local create_floating_window = function(opts)
   -- Set default options
   opts = opts or {}
-  local width = opts.width or math.floor(vim.o.columns * 0.8) -- 80% of the screen width
-  local height = opts.height or math.floor(vim.o.lines * 0.8) -- 80% of the screen height
-  local row = opts.row or math.floor((vim.o.lines - height) / 2) -- Center vertically
+  local width = opts.width or math.floor(vim.o.columns * 0.8)     -- 80% of the screen width
+  local height = opts.height or math.floor(vim.o.lines * 0.8)     -- 80% of the screen height
+  local row = opts.row or math.floor((vim.o.lines - height) / 2)  -- Center vertically
   local col = opts.col or math.floor((vim.o.columns - width) / 2) -- Center horizontally
   local filetype = opts.filetype
 
@@ -25,7 +25,7 @@ local create_floating_window = function(opts)
     height = height,
     row = row,
     col = col,
-    style = 'minimal', -- Optional: makes the window look "minimal"
+    style = 'minimal',                 -- Optional: makes the window look "minimal"
     border = opts.border or 'rounded', -- Optional: default to 'rounded' border
     title = 'REPL',
     footer = 'Language: ' .. (filetype or 'unknown'),
@@ -66,27 +66,27 @@ M.open_repl = function()
     filetype = nil
   end
 
-  M.state = create_floating_window { buf = M.state.buf, filetype = filetype }
-  if vim.bo[M.state.buf].buftype ~= 'terminal' then
+  M.st = create_floating_window { buf = M.st.buf, filetype = filetype }
+  if vim.bo[M.st.buf].buftype ~= 'terminal' then
     start_repl_in_current_buffer(filetype)
   end
 end
 
 M.close_repl = function()
-  if vim.api.nvim_buf_is_valid(M.state.buf) then
-    vim.api.nvim_buf_delete(M.state.buf, { force = true })
+  if vim.api.nvim_buf_is_valid(M.st.buf) then
+    vim.api.nvim_buf_delete(M.st.buf, { force = true })
   end
 end
 
 M.hide_repl = function()
-  if vim.api.nvim_win_is_valid(M.state.win) then
-    vim.api.nvim_win_hide(M.state.win) -- Closes window and hides buffer
+  if vim.api.nvim_win_is_valid(M.st.win) then
+    vim.api.nvim_win_hide(M.st.win) -- Closes window and hides buffer
   end
 end
 
 M.toggle_repl = function()
-  if vim.api.nvim_win_is_valid(M.state.win) then
-    vim.api.nvim_win_hide(M.state.win) -- Closes window and hides buffer
+  if vim.api.nvim_win_is_valid(M.st.win) then
+    vim.api.nvim_win_hide(M.st.win) -- Closes window and hides buffer
   else
     M.open_repl()
   end

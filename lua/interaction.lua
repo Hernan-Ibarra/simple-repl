@@ -17,8 +17,7 @@ end
 -- Send the whole file to the REPL
 M.send_file = function()
   local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-  send_to_repl(table.insert(lines, ''))
-  print(table.concat(lines, ', '))
+  send_to_repl(lines)
 end
 
 -- Send the selected text to the REPL

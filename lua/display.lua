@@ -10,9 +10,9 @@ local repl_commands = {
 local create_floating_window = function(opts)
   -- Set default options
   opts = opts or {}
-  local width = opts.width or math.floor(vim.o.columns * 0.8) -- 80% of the screen width
-  local height = opts.height or math.floor(vim.o.lines * 0.8) -- 80% of the screen height
-  local row = opts.row or math.floor((vim.o.lines - height) / 2) -- Center vertically
+  local width = opts.width or math.floor(vim.o.columns * 0.8)     -- 80% of the screen width
+  local height = opts.height or math.floor(vim.o.lines * 0.8)     -- 80% of the screen height
+  local row = opts.row or math.floor((vim.o.lines - height) / 2)  -- Center vertically
   local col = opts.col or math.floor((vim.o.columns - width) / 2) -- Center horizontally
   local filetype = opts.filetype
 
@@ -23,7 +23,7 @@ local create_floating_window = function(opts)
     height = height,
     row = row,
     col = col,
-    style = 'minimal', -- Optional: makes the window look "minimal"
+    style = 'minimal',                 -- Optional: makes the window look "minimal"
     border = opts.border or 'rounded', -- Optional: default to 'rounded' border
     title = 'REPL',
     footer = 'Language: ' .. (filetype or 'unknown'),
@@ -95,4 +95,4 @@ vim.api.nvim_create_user_command('ReplOpen', open_repl, {})
 vim.api.nvim_create_user_command('ReplClose', close_repl, {})
 vim.api.nvim_create_user_command('ReplRestart', restart_repl, {})
 
-vim.keymap.set({ 'n', 't' }, '<leader>rt', '<cmd>ReplToggle<CR>')
+vim.keymap.set('n', '<leader>rt', '<cmd>ReplToggle<CR>')

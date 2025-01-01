@@ -1,15 +1,17 @@
----@type {win: number, buf: number}
-local state = require 'state'
-
 local display = require 'display'
+for k, v in pairs(display) do
+  print(k)
+end
 
 local M = {}
 
 local send_to_repl = function(code)
   display.open_repl()
-  local repl_channel = vim.bo[state.buf].channel
+  local repl_channel = vim.bo[display.state.buf].channel
   vim.fn.chansend(repl_channel, code .. '\n')
 end
+
+send_to_repl '2 + 3'
 
 -- Send the current line to the REPL
 M.send_line = function()

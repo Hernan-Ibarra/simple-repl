@@ -1,7 +1,6 @@
----@type {win: number, buf: number}
-local state = require 'state'
-
 local M = {}
+
+M.state = { buf = -1, win = -1 }
 
 local repl_commands = {
   lua = 'lua',
@@ -67,28 +66,27 @@ M.open_repl = function()
     filetype = nil
   end
 
-  state = create_floating_window { buf = state.buf, filetype = filetype }
-
-  if vim.bo[state.buf].buftype ~= 'terminal' then
+  M.state = create_floating_window { buf = M.state.buf, filetype = filetype }
+  if vim.bo[M.state.buf].buftype ~= 'terminal' then
     start_repl_in_current_buffer(filetype)
   end
 end
 
 M.close_repl = function()
-  if vim.api.nvim_buf_is_valid(state.buf) then
-    vim.api.nvim_buf_delete(state.buf, { force = true })
+  if vim.api.nvim_buf_is_valid(M.state.buf) then
+    vim.api.nvim_buf_delete(M.state.buf, { force = true })
   end
 end
 
 M.hide_repl = function()
-  if vim.api.nvim_win_is_valid(state.win) then
-    vim.api.nvim_win_hide(state.win) -- Closes window and hides buffer
+  if vim.api.nvim_win_is_valid(M.state.win) then
+    vim.api.nvim_win_hide(M.state.win) -- Closes window and hides buffer
   end
 end
 
 M.toggle_repl = function()
-  if vim.api.nvim_win_is_valid(state.win) then
-    vim.api.nvim_win_hide(state.win) -- Closes window and hides buffer
+  if vim.api.nvim_win_is_valid(M.state.win) then
+    vim.api.nvim_win_hide(M.state.win) -- Closes window and hides buffer
   else
     M.open_repl()
   end

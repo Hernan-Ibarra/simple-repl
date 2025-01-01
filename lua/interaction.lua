@@ -3,6 +3,9 @@ local display = require 'display'
 local M = {}
 
 local send_to_repl = function(code)
+  for i, line in ipairs(code) do
+    code[i] = line:gsub('^%s+', '')
+  end
   display.open_repl()
   local repl_channel = vim.bo[display.state.buf].channel
   vim.fn.chansend(repl_channel, code)
@@ -29,7 +32,7 @@ M.send_selection = function()
   vim.cmd 'normal! "_du'
   -- Get the start and end positions of the visual selection
   local start_pos = vim.fn.getpos "'<" -- Start position of the visual selection
-  local end_pos = vim.fn.getpos "'>" -- End position of the visual selection
+  local end_pos = vim.fn.getpos "'>"   -- End position of the visual selection
 
   -- Convert the positions to zero-based row and column indices
   local start_row = start_pos[2] - 1

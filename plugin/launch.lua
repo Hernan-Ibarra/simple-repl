@@ -7,7 +7,14 @@
 ---@return nil
 local make_command = function(command_name, library, method_name)
   local callback = function()
-    require(library)[method_name]()
+    local methods
+    if library == 'display' then
+      methods = require(library).methods
+    elseif library == 'interaction' then
+      methods = require(library)
+    end
+
+    methods[method_name]()
   end
   vim.api.nvim_create_user_command(command_name, callback, {})
 end

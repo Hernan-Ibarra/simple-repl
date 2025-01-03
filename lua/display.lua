@@ -27,10 +27,12 @@ end
 local create_floating_window = function(opts)
   -- Set default options
   opts = opts or {}
-  local width = opts.dimensions.width or math.floor(vim.o.columns * 0.8) -- 80% of the screen width
-  local height = opts.dimensions.height or math.floor(vim.o.lines * 0.8) -- 80% of the screen height
-  local row = opts.dimensions.row or math.floor((vim.o.lines - height) / 2) -- Center vertically
-  local col = opts.dimensions.col or math.floor((vim.o.columns - width) / 2) -- Center horizontally
+  local dimensions = opts.dimensions or {}
+
+  local width = dimensions.width or math.floor(vim.o.columns * 0.8)     -- 80% of the screen width
+  local height = dimensions.height or math.floor(vim.o.lines * 0.8)     -- 80% of the screen height
+  local row = dimensions.row or math.floor((vim.o.lines - height) / 2)  -- Center vertically
+  local col = dimensions.col or math.floor((vim.o.columns - width) / 2) -- Center horizontally
   local filetype = opts.filetype
 
   -- Create the floating window
@@ -40,7 +42,7 @@ local create_floating_window = function(opts)
     height = height,
     row = row,
     col = col,
-    style = 'minimal', -- Optional: makes the window look "minimal"
+    style = 'minimal',  -- Optional: makes the window look "minimal"
     border = 'rounded', -- Optional: default to 'rounded' border
     title = 'REPL',
     footer = 'Language: ' .. (filetype or 'unknown'),

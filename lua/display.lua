@@ -8,6 +8,7 @@
 ---@type { state: state, methods: { [string]: display_method } }
 local M = {
   state = { buf = -1, win = -1, detected_ft = nil },
+  methods = {},
 }
 
 local ft_info = require 'ft-info'

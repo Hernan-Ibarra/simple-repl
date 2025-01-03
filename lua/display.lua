@@ -1,22 +1,25 @@
 ---@class state
 ---@field buf number A buffer handle
 ---@field win number A window ID
+---@field detected_ft string? The filetype of the buffer
 
 ---@alias display_method fun(): nil
 
 ---@type { state: state, methods: { [string]: display_method } }
 local M = {
-  state = { buf = -1, win = -1 },
+  state = { buf = -1, win = -1, detected_ft = nil },
 }
+
+local ft_info = require 'ft-info'
 
 ---@type { [string]: string }
-local repl_commands = {
-  lua = 'lua',
-  python = 'python3',
-  scheme = 'scheme',
-}
+local repl_commands = {}
 
--- Function to create a floating window. If no buffer is given, it creates a new one.
+for ft_name, ft_spec in pairs(ft_info) do
+  repl_commands[ft_name] = ft_spec.repl_command
+end
+
+--- Function to create a floating window. If no buffer is given, it creates a new one.
 ---@param opts { dimensions: { [string]: number }?,  filetype: string?, buf: number? }
 ---@return state
 ---@nodiscard
@@ -55,10 +58,10 @@ local create_floating_window = function(opts)
   -- Open the window
   local win = vim.api.nvim_open_win(buf, true, win_opts)
 
-  return { buf = buf, win = win }
+  return { buf = buf, win = win, detected_ft = filetype }
 end
 
--- Function to start the REPL for the given filetype in the current buffer
+--- Function to start the REPL for the given filetype in the current buffer
 ---@param filetype string? The filetype used for the REPL
 ---@return nil
 local function start_repl_in_current_buffer(filetype)
@@ -75,7 +78,7 @@ local function start_repl_in_current_buffer(filetype)
   end
 end
 
--- Hides the REPL (closes window, hides buffer)
+--- Hides the REPL (closes window, hides buffer)
 ---@type display_method
 M.methods.hide_repl = function()
   if vim.api.nvim_win_is_valid(M.state.win) then
@@ -83,7 +86,7 @@ M.methods.hide_repl = function()
   end
 end
 
--- Open REPL in floating window, creating buffer if necessary, updates state
+--- Open REPL in floating window, creating buffer if necessary, updates state
 ---@type display_method
 M.methods.open_repl = function()
   ---@type string?
@@ -99,7 +102,7 @@ M.methods.open_repl = function()
   end
 end
 
--- Close the REPL (closes window, destroys buffer)
+--- Close the REPL (closes window, destroys buffer)
 ---@type display_method
 M.methods.close_repl = function()
   if vim.api.nvim_buf_is_valid(M.state.buf) then
@@ -107,7 +110,7 @@ M.methods.close_repl = function()
   end
 end
 
--- Alternates between opening and hiding the REPL
+--- Alternates between opening and hiding the REPL
 ---@type display_method
 M.methods.toggle_repl = function()
   if vim.api.nvim_win_is_valid(M.state.win) then
